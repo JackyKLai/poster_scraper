@@ -58,7 +58,7 @@ public class Main {
                 String selection = scan.nextLine();
                 while (!(StringUtils.isNumeric(selection) && Integer.parseInt(selection) > 0
                         && Integer.parseInt(selection) < i + 1)) {
-                    System.out.print("Made your selection with a number between 1 to " + i + ": ");
+                    System.out.print("Make your selection with a number between 1 to " + i + ": ");
                     selection = scan.nextLine();
                 }
                 final Document titlePage = Jsoup.connect("https://www.imdb.com" +
