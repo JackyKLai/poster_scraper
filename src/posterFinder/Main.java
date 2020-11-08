@@ -3,18 +3,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 public class Main {
-    public static void saveImage(String imageUrl, String imageName) throws IOException {
+    public static void saveImage(String imageUrl, String imageName, String dest) throws IOException {
         URL url = new URL(imageUrl);
         String fileName = url.getFile();
-        String destName = "./" + imageName + ".jpg";
+        String destName = dest + "/" + imageName + ".jpg";
 
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destName);
@@ -37,6 +34,9 @@ public class Main {
             String title = scan.nextLine();
             String url = "https://www.imdb.com/find?s=tt&q=" + title;
             try {
+                String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
+                        .toURI()).getPath();
+                final String loc = path.substring(0, path.lastIndexOf('/'));
                 final Document document = Jsoup.connect(url).get();
                 boolean results = !document.select("h1.findHeader").text().contains("No");
                 if (!results) {
@@ -70,7 +70,7 @@ public class Main {
                     System.out.println("No poster available.");
                     break;
                 }
-                saveImage(imgLink, imgPage.title());
+                saveImage(imgLink, imgPage.title(), loc);
                 System.out.println("done");
                 done = true;
             } catch (Exception ex) {
