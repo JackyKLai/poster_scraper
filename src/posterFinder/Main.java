@@ -69,6 +69,7 @@ public class Main {
                         }
                         System.out.println(creds);
                     }
+                    System.out.println("");
                     i++;
                 }
                 System.out.print("Select a title (use its number): ");
