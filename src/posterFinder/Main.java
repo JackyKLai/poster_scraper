@@ -7,6 +7,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.select.Elements;
+
 public class Main {
     public static void saveImage(String imageUrl, String imageName, String dest) throws IOException {
         URL url = new URL(imageUrl);
@@ -36,7 +38,12 @@ public class Main {
             try {
                 String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
                         .toURI()).getPath();
-                final String loc = path.substring(0, path.lastIndexOf('/'));
+                String loc;
+                if (path.contains("/")) {
+                    loc = path.substring(0, path.lastIndexOf('/'));
+                } else {
+                    loc = path.substring(0, path.lastIndexOf('\\'));
+                }
                 final Document document = Jsoup.connect(url).get();
                 boolean results = !document.select("h1.findHeader").text().contains("No");
                 if (!results) {
@@ -52,6 +59,16 @@ public class Main {
                     }
                     System.out.println(Integer.toString(i+1) + ". " + row.text());
                     links[i] = row.select("td.result_text > a").attr("href");
+                    Document infoPage = Jsoup.connect("https://www.imdb.com" +
+                            links[i]).get();
+                    Elements table = infoPage.select("div.plot_summary");
+                    for (Element credit : table.select("div.credit_summary_item")) {
+                        String creds = credit.text();
+                        if (creds.contains("»")) {
+                            creds = creds.substring(0, creds.lastIndexOf("|"));
+                        }
+                        System.out.println(creds);
+                    }
                     i++;
                 }
                 System.out.print("Select a title (use its number): ");
